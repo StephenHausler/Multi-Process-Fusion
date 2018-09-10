@@ -4,6 +4,9 @@ Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing M
 Note: Currently at Revision 0.1 and full functionality is not guaranteed.
 Revision 0.2 due on 14/09/2018.
 
+Known bugs:
+Code currently not working with video files.
+
 Requirements:
 1) MATLAB 2017 or later.
 2) MATLAB Neural Network Toolbox.
