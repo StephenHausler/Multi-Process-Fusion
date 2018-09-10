@@ -58,6 +58,7 @@ truePositive = [0 0];
 falsePositive = [0 0];
 Template_count_for_plot = 0;
 plot_skip = 0;
+worstIDCounter = [0 0 0 0];
 
 O1 = zeros(totalImagesR,1);
 O2 = zeros(totalImagesR,1);
@@ -215,7 +216,7 @@ if Video_option == 1
             end
             
             %Find the worst observations for the current image
-            [worstID,worstIDStorage(totalImagesQ,:)] = findWorstID(O1,O2,O3,O4,totalImagesQ,Rwindow);
+            [worstID,~] = findWorstID(O1,O2,O3,O4,totalImagesQ);
             worstIDCounter(worstID) = worstIDCounter(worstID) + 1;
             worstIDArray(totalImagesQ) = worstID;
             
@@ -476,7 +477,7 @@ for ii = 1:totalImagesQ
         end
     end
     %Find the worst observations for the current image
-    [worstID] = findWorstID(O1,O2,O3,O4,ii,algSettings.Rwindow);
+    [worstID] = findWorstID(O1,O2,O3,O4,ii);
     worstIDCounter(worstID) = worstIDCounter(worstID) + 1;
     worstIDArray(ii) = worstID;
     
@@ -486,7 +487,8 @@ for ii = 1:totalImagesQ
 
         S = (ii-algSettings.maxSeqLength+1):ii;  %length(S) should be equal to maxSeqLength.
 
-        [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features(S,T,O1,O2,O3,O4,algSettings.minSeqLength,algSettings.Rwindow,worstIDArray);        
+        [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features(S,T,O1,O2,O3,O4,...
+            algSettings.minSeqLength,algSettings.Rwindow,worstIDArray,algSettings.qROC_Smooth);        
         
         quality = quality/newSeqLength;
             
@@ -495,14 +497,14 @@ for ii = 1:totalImagesQ
         %loop through every threshold to generate the PR curve.
         for thresh_counter = 1:length(algSettings.thresh)
             if quality > algSettings.thresh(thresh_counter)
-                if sum(GT_file(Imstart_Q+ii,:))==0
+                if sum(GT_file.GPSMatrix(Imstart_Q+ii,:))==0
                     %true negative
                 else
                     %false negative
                     false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
                 end
             else
-                if (GT_file(Imstart_Q+ii,Imstart_R+id)==1)
+                if (GT_file.GPSMatrix(Imstart_R+id,Imstart_Q+ii)==1)
                     %true positive
                     recall_count(thresh_counter) = recall_count(thresh_counter) + 1;
                 else  %false positive
@@ -518,18 +520,17 @@ for ii = 1:totalImagesQ
                 Template_plot(Template_count_for_plot,1) = totalImagesR + ii;
                 Template_plot(Template_count_for_plot,2) = Template_count_for_plot;     
             else    
-                if (ground_truth(Imstart_Q+ii,Imstart_R+id)==1)
+                if (GT_file.GPSMatrix(Imstart_R+id,Imstart_Q+ii)==1)
                     recall_count2 = recall_count2 + 1;
-                    truePositive(recall_count2,1) = Imstart_Q + ii;
+                    truePositive(recall_count2,1) = Imstart_Q + ii + totalImagesR;
                     truePositive(recall_count2,2) = Imstart_R + id;
                 else
                     error_count2 = error_count2 + 1;
-                    falsePositive(error_count2,1) = Imstart_Q + ii;
+                    falsePositive(error_count2,1) = Imstart_Q + ii + totalImagesR;
                     falsePositive(error_count2,2) = Imstart_R + id;
                 end
             end 
-%--------------------------------------------------------------------------            
-        if Plot == 1          
+%--------------------------------------------------------------------------                      
             subplot(2,2,3,'replace');
             Im_compare = imread(char(fullfile(fR(1).folder,filenamesR{id})));
             image(Im_compare);
@@ -557,8 +558,7 @@ for ii = 1:totalImagesQ
                 end
                 plot(Template_plot(:,1),Template_plot(:,2),'sr');
             end   
-            drawnow;     
-        end         
+            drawnow;             
 %--------------------------------------------------------------------------       
     end
 end

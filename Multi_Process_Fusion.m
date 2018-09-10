@@ -35,7 +35,7 @@ Query_folder = 'D:\Windows\St_Lucia_Dataset\1545_15FPS\Frames';
 Query_file_type = '.jpeg';
 Imstart_Q = 0;  %start dataset after this many frames or seconds for video.
 
-Frame_skip = 3;     %Duel use variable: for images, this means use every ith frame
+Frame_skip = 1;     %Duel use variable: for images, this means use every ith frame
 %for videos, this means extract out of video at this FPS.
 
 %Ground truth load:
@@ -93,6 +93,7 @@ HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
 actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
+%Need to adjust this for the neural network you use.
 
 %END OF ADJUSTABLE SETTINGS
 %--------------------------------------------------------------------------
@@ -104,7 +105,7 @@ actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
     HOG_cellSize,Initial_crop,Normalise);
 
 %Now run query traverse...
-[precision,recall,truePositive,falsePositive] = Multi_Process_Fusion_Run(...
+[precision,recall,truePositive,falsePositive,worstIDCounter] = Multi_Process_Fusion_Run(...
     Video_option,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
     HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
