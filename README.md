@@ -18,3 +18,9 @@ Getting Started:
 4) Run the file. Note: the reference traverse will take several minutes with no intermediate feedback.
     Once the query traverse begins, a figure will display the recognition process.
 
+Acknowledgements:
+MATLAB Libaries: MATLAB
+patchNormalizeHMM: Niko Sunderhauf copyright 2013
+sort_nat: Douglas M. Schwarz copyright 2008
+Hybrid Net (not included in this release): Zetao Chen 2017
+
