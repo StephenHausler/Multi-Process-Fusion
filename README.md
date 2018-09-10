@@ -5,10 +5,10 @@ Note: Currently at Revision 0.1 and full functionality is not guaranteed.
 Revision 0.2 due on 14/09/2018.
 
 Requirements:
-  MATLAB 2017 or later.
-  MATLAB Neural Network Toolbox.
-  Computer with stand-alone graphics hardware.
-  A downloaded CNN caffemodel and prototxt (not included in this repository).
+1) MATLAB 2017 or later.
+2) MATLAB Neural Network Toolbox.
+3) Computer with stand-alone graphics hardware.
+4) A downloaded CNN caffemodel and prototxt (not included in this repository).
 
 Getting Started:
 1) Obtain CNN model files. For HybridNet, permission must be attained from the original author.
