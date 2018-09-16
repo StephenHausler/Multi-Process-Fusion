@@ -8,6 +8,7 @@
 %--------------------------------------------------------------------------
 
 clear variables
+clear global        %REMOVE THIS AND REWRITE TO REMOVE ALL GLOBAL VARIABLES
 %global variables:
 global totalImagesR
 global totalImagesQ
@@ -29,11 +30,13 @@ Nordland_tunnel_skip = 0;   %only set to 1 if using Nordland video and want
 Ref_folder = 'D:\Windows\St_Lucia_Dataset\0845_15FPS\Frames';
 Ref_file_type = '.jpeg';     
 Imstart_R = 0;  %start dataset after this many frames or seconds for video.
+finalImage_R = 3945; %For St Lucia dataset, this is where the first loop ends
 
 %Query Database File Address (provide full path to folder containing images or video):
 Query_folder = 'D:\Windows\St_Lucia_Dataset\1545_15FPS\Frames';
 Query_file_type = '.jpeg';
 Imstart_Q = 0;  %start dataset after this many frames or seconds for video.
+finalImage_Q = 4000;
 
 Frame_skip = 1;     %Duel use variable: for images, this means use every ith frame
 %for videos, this means extract out of video at this FPS.
@@ -102,15 +105,14 @@ actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
 [Template_array1,Template_array2,Template_array3,Template_array4] = ...
     DatabaseLoad(Video_option,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
-    HOG_cellSize,Initial_crop,Normalise);
+    HOG_cellSize,Initial_crop,Normalise,finalImage_R);
 
 %Now run query traverse...
 [precision,recall,truePositive,falsePositive,worstIDCounter] = Multi_Process_Fusion_Run(...
     Video_option,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
     HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
-    Template_array2,Template_array3,Template_array4,GT_file,algSettings);
-
+    Template_array2,Template_array3,Template_array4,GT_file,algSettings,finalImage_Q);
 
 %Now plot/display results...
 

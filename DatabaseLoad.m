@@ -15,7 +15,7 @@ global Template_plot
 global Nordland_tunnel_skip
 global id2Vid
 
-if nargin == 13
+if nargin == 14
     Video_option = varargin{1};
     Ref_folder = varargin{2};
     Ref_file_type = varargin{3};
@@ -29,6 +29,7 @@ if nargin == 13
     HOG_cellSize = varargin{11};
     Initial_crop = varargin{12};
     Normalise = varargin{13};
+    finalImage_R = varargin{14};
 else
     error('invalid number of inputs');
 end
@@ -42,7 +43,7 @@ if Video_option == 0
     filesR = sort_nat(fR2(1,:));
     i = 1;
     
-    while((Imcounter_R+1) <= length(filesR))
+    while((Imcounter_R+1) <= finalImage_R)
         filenamesR{i} = filesR(Imcounter_R+1);
         Imcounter_R = Imcounter_R + Frame_skip;
         i=i+1;

@@ -80,7 +80,7 @@ if abs(qCompare) < Qt
 end
 
 tau = tau - seqStart;
-        
+
 %To speed the compute time, replace these floating point numbers with
 %fixed length integers - multiple by 1000 (for 3 decimal places of precision)
 %then convert to int16.
@@ -89,8 +89,9 @@ oo1L = int16(oo1L*1000);
 oo2L = int16(oo2L*1000);
 oo3L = int16(oo3L*1000);
 oo4L = int16(oo4L*1000);
-        
-% initialize space
+%this results in a significant code speed-up
+
+%initialize
 delta=zeros(kk,tau);  H=zeros(kk,tau); S=zeros(1,tau);
 delta = int16(delta);
 H(:,1) = 0;

@@ -21,7 +21,7 @@ global Template_plot
 % global finalIndex_Q         %Nordland only
 
 %Process function inputs
-if nargin == 22   
+if nargin == 23   
     Video_option = varargin{1};
     Ref_folder = varargin{2};
     Ref_file_type = varargin{3};
@@ -44,6 +44,7 @@ if nargin == 22
     Template_array4 = varargin{20};
     GT_file = varargin{21};
     algSettings = varargin{22};
+    finalImage_Q = varargin{23};
 else
     error('Incorrect number of inputs to function');
 end
@@ -325,7 +326,7 @@ fQ2 = struct2cell(fQ);
 filesQ = sort_nat(fQ2(1,:));
 i = 1;
 
-while((Imcounter_Q+1) <= length(filesQ))
+while((Imcounter_Q+1) <= finalImage_Q)
     filenamesQ{i} = filesQ(Imcounter_Q+1);
     Imcounter_Q = Imcounter_Q + Frame_skip;
     i=i+1;
@@ -356,7 +357,7 @@ for ii = 1:totalImagesQ
         diffVector4 = zeros(1,Template_count);
         Template_count_for_plot = Template_count;
         %Transition matrix:
-        for j = 1:totalImagesR %these might as well both be Template_count
+        for j = 1:totalImagesR 
             for k = 1:Template_count
                 if ((k-j) >= algSettings.minVelocity) && ((k-j) <= algSettings.maxVelocity) 
                     T(j,k) = 1; %most likely the robot will stay in place or move forward.
