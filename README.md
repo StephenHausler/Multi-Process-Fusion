@@ -1,8 +1,8 @@
 # Multi-Process-Fusion
 Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing Methods
 
-Note: Currently at Revision 0.2.
-Revision 0.3 due on 21/09/2018.
+Note: Currently at Revision 0.3.
+Revision 0.4 due on 21/09/2018.
 
 
 Requirements:
