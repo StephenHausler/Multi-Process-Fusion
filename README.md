@@ -1,8 +1,14 @@
 # Multi-Process-Fusion
 Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing Methods
+Paper under review for IEEE RAL. 
+Copyright: Stephen Hausler
 
-Note: Currently at Revision 0.3.
+ChangeLog:
+Currently at Revision 0.3.
 Revision 0.4 due on 21/09/2018.
+
+190918: fixed bug that caused error at end of dataset immediately prior to printing the precision-recall curves.
+
 
 
 Requirements:
