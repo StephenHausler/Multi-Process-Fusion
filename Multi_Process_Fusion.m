@@ -8,10 +8,10 @@
 %--------------------------------------------------------------------------
 
 clear variables
-% clear global        
-% %global variables:
-% global Nordland_tunnel_skip
-% global id2Vid
+clear global        
+%global variables:
+global Nordland_tunnel_skip
+global id2Vid
 
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
@@ -20,6 +20,8 @@ clear variables
 Video_option = 0;  % 0 = images, 1 = video
 Nordland_tunnel_skip = 0;   %only set to 1 if using Nordland video and want
 %to skip all the tunnels (skips are hardcoded in DatabaseLoad.m).
+%also if select this option, don't need to provide a GPS file as the
+%traverses are aligned.
 
 %Reference Database File Address (provide full path to folder containing images or video):
 Ref_folder = 'D:\Windows\St_Lucia_Dataset\0845_15FPS\Frames';
@@ -60,6 +62,7 @@ epsilon = 0.001;        %floor value
 minVelocity = 0;        %minimum assumed velocity of vehicle in number of frames.
 maxVelocity = 5;        %maximum assumed velocity of vehicle in number of frames.
 Qt = 0.1;               %Quality rate-of-change threshold 
+plotThresh = 0.4;       %Quality threshold for template plot graph
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 20;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
@@ -82,7 +85,8 @@ qROC_Smooth = 0;        % True: Smooth quality scores over sequence using a movi
 %readability
 algSettings = struct('thresh',thresh,'maxSeqLength',maxSeqLength,'minSeqLength',...
     minSeqLength,'obsThresh',obsThresh,'minVelocity',minVelocity,'maxVelocity',...
-    maxVelocity,'Qt',Qt,'Rwindow',Rwindow,'qROC_Smooth',qROC_Smooth,'epsilon',epsilon);
+    maxVelocity,'Qt',Qt,'Rwindow',Rwindow,'qROC_Smooth',qROC_Smooth,...
+    'epsilon',epsilon,'plotThresh',plotThresh);
 
 %TODO: allow for different types of user-provided image processing code
 %files.

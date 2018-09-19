@@ -1,12 +1,8 @@
 function [precision,recall,truePositive,falsePositive,worstIDCounter] = Multi_Process_Fusion_Run(varargin)
 
-%Single CNN-D observation (using distance between max activations)
-%--------------------------------------------------
-%---    This code performs place recognition,   ---
-%---    not SLAM - an initial traverse of the   ---
-%---    dataset is performed before place       ---
-%---    recognition is performed.               ---
-%--------------------------------------------------
+%global variables:
+global Nordland_tunnel_skip
+global id2Vid
 
 %Process function inputs
 if nargin == 26   
@@ -64,24 +60,29 @@ hold on
     
 %Recall route--------------------------------------------------------------
 if Video_option == 1
-%Nordland------------------------------------------------------------------
+    vidQ = VideoReader(fullfile(Query_folder,Query_file_type));
+    skipIndices = [1290 2040; 2210 2355; 2500 2660; 3400 3670; 5050 5460; 6060 6220]; %if using Nordland
+    Imcounter_Q = Imstart_Q;
+    totalImagesQ = 0;
     while Imcounter_Q < finalIndex_Q
-        if ((Imcounter_Q > 1290) && (Imcounter_Q < 2040)) 
-            Imcounter_Q = Imcounter_Q + 1;
-        elseif ((Imcounter_Q > 2210) && (Imcounter_Q < 2355)) 
-            Imcounter_Q = Imcounter_Q + 1;
-        elseif ((Imcounter_Q > 2500) && (Imcounter_Q < 2660)) 
-            Imcounter_Q = Imcounter_Q + 1;
-        elseif ((Imcounter_Q > 3400) && (Imcounter_Q < 3670)) 
-            Imcounter_Q = Imcounter_Q + 1;
-        elseif ((Imcounter_Q > 5050) && (Imcounter_Q < 5460))
-            Imcounter_Q = Imcounter_Q + 1;
-        elseif ((Imcounter_Q > 6060) && (Imcounter_Q < 6220))
-            Imcounter_Q = Imcounter_Q + 1;
+        if (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(1,1)) && (Imcounter_Q < skipIndices(1,2))) 
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(2,1)) && (Imcounter_Q < skipIndices(2,2))) 
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(3,1)) && (Imcounter_Q < skipIndices(3,2))) 
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(4,1)) && (Imcounter_Q < skipIndices(4,2))) 
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(5,1)) && (Imcounter_Q < skipIndices(5,2)))
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(6,1)) && (Imcounter_Q < skipIndices(6,2)))
+            Imcounter_Q = Imcounter_Q + Frame_skip;
         else
-            Nord_Q.CurrentTime = Imcounter_Q;
+            vidQ.CurrentTime = Imcounter_Q;
             totalImagesQ = totalImagesQ + 1;
-            Im = readFrame(Nord_Q);
+            
+            Im = readFrame(vidQ);
+            
             if totalImagesQ == 1
                 %Some pre-allocations:
                 diffVector1 = zeros(1,Template_count);
@@ -92,7 +93,7 @@ if Video_option == 1
                 %Transition matrix:
                 for j = 1:totalImagesR
                     for k = 1:Template_count
-                        if ((k-j) >= minVelocity) && ((k-j) <= maxVelocity) 
+                        if ((k-j) >= algSettings.minVelocity) && ((k-j) <= algSettings.maxVelocity) 
                             T(j,k) = 1; %most likely the robot will stay in place or move forward.
                         else
                             T(j,k) = 0.001; %what is the probability that the robot will take a different route?
@@ -101,117 +102,114 @@ if Video_option == 1
                 end
             end
             
-            if Plot == 1
-                %display the images in a "movie" figure to check if "real" data:
-                subplot(2,2,1,'replace');
-                image(Im);
-                title('Current View');  
-            end
+            subplot(2,2,1,'replace');
+            image(Im);
+            title('Current View');
             
-            %for HybridNet:
-            Im1 = imresize(Im,[227 227],'lanczos3');
+            sz = size(Im);
+            Im = Im(Initial_crop(1):(sz(1)-Initial_crop(2)),Initial_crop(3):(sz(2)-Initial_crop(4)),:);
+            
+            Im1 = imresize(Im,[227 227],'lanczos3');    %for CNN
             Im2 = rgb2gray(Im);
-            Im3 = imresize(Im2,[320 640],'lanczos3'); %downsize for HOG
-            Im2 = imresize(Im2,[32 64],'lanczos3'); %downsize for SAD
+            Im3 = imresize(Im2,[HOG_resolution(2) HOG_resolution(1)],'lanczos3'); %downsize for HOG
+            Im4 = imresize(Im2,[SAD_resolution(2) SAD_resolution(1)],'lanczos3'); %downsize for SAD
             
-            sum_array1 = CNN_Create_Template_Dist(net,Im1,actLayer);
-            sum_array4 = CNN_Create_Template(net,Im1,actLayer);
+            sum_array1 = CNN_Create_Template(net,Im1,actLayer);         %CNN
+            sum_array2 = CNN_Create_Template_Dist(net,Im1,actLayer);    %CNN-Dist
             
-            sum_array2 = zeros(1,size(Im2,1)*size(Im2,2),'int8');
-            Im2P = patchNormalizeHMM(Im2,8,0,0);
-            sum_array2(1,:) = Im2P(:);
+            sum_array3 = extractHOGFeatures(Im3,'CellSize',[HOG_cellSize(1) HOG_cellSize(2)]);  %HOG
             
-            sum_array3 = extractHOGFeatures(Im3,'CellSize',[32 32]);
-            
+            sum_array4 = zeros(1,size(Im4,1)*size(Im4,2),'int8'); %SAD
+            Im4P = patchNormalizeHMM(Im4,SAD_patchSize,0,0);
+            sum_array4(1,:) = Im4P(:);
+    
             sArray_sz1 = size(sum_array1);
-            sArray_sz4 = size(sum_array4);
+            sArray_sz2 = size(sum_array2);
             
             if Normalise == 1
-                sumArrayStore(totalImagesQ,:) = sum_array4;
+                sumArrayStore(totalImagesQ,:) = sum_array1;
                 
                 Q_fAv = mean(sumArrayStore,1);
                 
                 if totalImagesQ == 1
-                    Q_fSt = ones(1,sArray_sz4(2));
+                    Q_fSt = ones(1,sArray_sz1(2));
                 else
                     Q_fSt = std(sumArrayStore,1);
                 end
                 
                 %Now normalise all the features in the current scene:
-                for j = 1:sArray_sz4(2)
+                for j = 1:sArray_sz1(2)
                     if Q_fSt(j) == 0
-                        sum_array4(j) = 0;
+                        sum_array1(j) = 0;
                     else
-                        sum_array4(j) = (sum_array4(j) - Q_fAv(j))/Q_fSt(j);
+                        sum_array1(j) = (sum_array1(j) - Q_fAv(j))/Q_fSt(j);
                     end
                 end
             end
             
             for k = 1:Template_count
-                distV = zeros(1,sArray_sz1(2));
-                %for sumArray1
-                for j = 1:sArray_sz1(2)
-                    distV(j) = ( ( Template_array1(1,j,k) - sum_array1(1,j) ).^2 ) +...
-                    ( Template_array1(2,j,k) - sum_array1(2,j) ).^2;
+                distV = zeros(1,sArray_sz2(2));
+                %for sumArray2
+                for j = 1:sArray_sz2(2)
+                    distV(j) = ( ( Template_array2(1,j,k) - sum_array2(1,j) ).^2 ) +...
+                    ( Template_array2(2,j,k) - sum_array2(2,j) ).^2;
                 end   
                 dist = sqrt(distV);
-                diffVector1(k) = sum(dist)/sArray_sz1(2);
+                diffVector2(k) = sum(dist)/sArray_sz2(2);
             end
             
-            D = abs(Template_array2 - sum_array2);
-            diffVector2 = sum(D,2);
-            diffVector2 = diffVector2';
+            D = abs(Template_array4 - sum_array4);
+            diffVector4 = sum(D,2);
+            diffVector4 = diffVector4';
             
-            G_sumArray3 = gpuArray(sum_array3);
-            G_sumArray4 = gpuArray(sum_array4);
+            G_sumArray1 = gpuArray(sum_array1);  %CNN
+            G_sumArray3 = gpuArray(sum_array3);  %HOG
             
+            G_templateArray1 = gpuArray(Template_array1);
             G_templateArray3 = gpuArray(Template_array3);
-            G_templateArray4 = gpuArray(Template_array4);
             
+            G_diffVector1 = gpuArray(zeros(1,Template_count));
             G_diffVector3 = gpuArray(zeros(1,Template_count));
-            G_diffVector4 = gpuArray(zeros(1,Template_count));
             
+            G_diffVector1 = pdist2(G_sumArray1,G_templateArray1,'cosine');
             G_diffVector3 = pdist2(G_sumArray3,G_templateArray3,'cosine');
-            G_diffVector4 = pdist2(G_sumArray4,G_templateArray4,'cosine');
             
+            diffVector1 = gather(G_diffVector1);
             diffVector3 = gather(G_diffVector3);
-            diffVector4 = gather(G_diffVector4);
 %--------------------------------------------------------------------------            
             mx1 = max(diffVector1); mx2 = max(diffVector2); mx3 = max(diffVector3); mx4 = max(diffVector4);
             df1 = mx1 - min(diffVector1); df2 = mx2 - min(diffVector2); df3 = mx3 - min(diffVector3); df4 = mx4 - min(diffVector4);
             
             for k = 1:Template_count
-                O_diff = ((mx1 - diffVector1(k))/df1)-0.001;
-                O_diff2 = ((mx2 - diffVector2(k))/df2)-0.001;
-                O_diff3 = ((mx3 - diffVector3(k))/df3)-0.001;
-                O_diff4 = ((mx4 - diffVector4(k))/df4)-0.001;
-                if O_diff < obsThresh
-                    O1(totalImagesQ,k) = 0.001;
+                O_diff = ((mx1 - diffVector1(k))/df1)-algSettings.epsilon;
+                O_diff2 = ((mx2 - diffVector2(k))/df2)-algSettings.epsilon;
+                O_diff3 = ((mx3 - diffVector3(k))/df3)-algSettings.epsilon;
+                O_diff4 = ((mx4 - diffVector4(k))/df4)-algSettings.epsilon;
+                if O_diff < algSettings.obsThresh
+                    O1(totalImagesQ,k) = algSettings.epsilon;
                 else
                     O1(totalImagesQ,k) = O_diff;
                 end
-                if O_diff2 < obsThresh
-                    O2(totalImagesQ,k) = 0.001; 
+                if O_diff2 < algSettings.obsThresh
+                    O2(totalImagesQ,k) = algSettings.epsilon; 
                 else
                     O2(totalImagesQ,k) = O_diff2;
                 end            
-                if O_diff3 < obsThresh
-                    O3(totalImagesQ,k) = 0.001; 
+                if O_diff3 < algSettings.obsThresh
+                    O3(totalImagesQ,k) = algSettings.epsilon; 
                 else
                     O3(totalImagesQ,k) = O_diff3;
                 end  
-                if O_diff4 < obsThresh
-                    O4(totalImagesQ,k) = 0.001;
+                if O_diff4 < algSettings.obsThresh
+                    O4(totalImagesQ,k) = algSettings.epsilon;
                 else
                     O4(totalImagesQ,k) = O_diff4;
                 end
             end
-            
             %Find the worst observations for the current image
             [worstID,~] = findWorstID(O1,O2,O3,O4,totalImagesQ);
             worstIDCounter(worstID) = worstIDCounter(worstID) + 1;
-            worstIDArray(totalImagesQ) = worstID;
-            
+            worstIDArray(totalImagesQ) = worstID;   
 %--------------------------------------------------------------------------            
             %Use the Viterbi algorithm to find the optimal path through the matrix of recent difference vectors.
             if totalImagesQ > algSettings.maxSeqLength
@@ -219,7 +217,7 @@ if Video_option == 1
                 
                 [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features...
                     (S,T,O1,O2,O3,O4,algSettings.minSeqLength,...
-                    algSettings.Rwindow,worstIDArray,algSettings.Qt);
+                    algSettings.Rwindow,worstIDArray,algSettings.qROC_Smooth,algSettings.Qt);
             
                 quality = quality/newSeqLength;
                 
@@ -227,35 +225,42 @@ if Video_option == 1
 %--------------------------------------------------------------------------                
                 %loop through every threshold to generate PR curve.
                 for thresh_counter = 1:length(algSettings.thresh)
-                    if quality > thresh(thresh_counter)
-                        %no 'new scenes' should be found in Nordland
-                        false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
+                    if quality > algSettings.thresh(thresh_counter)
+                        if (Nordland_tunnel_skip == 1) %on Nordland, the traverses are aligned
+                            %no 'new scenes' should be found in Nordland
+                            false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
+                        else  %provided GPS mat file
+                            if sum(GT_file.GPSMatrix(Imstart_Q+totalImagesQ)) == 0
+                                %true negative
+                            else
+                                false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
+                            end
+                        end
                     else
-                        if (totalImagesQ > (id-11)) && (totalImagesQ < (id+11))  %up to 10 frames out in either direction
-                            recall_count(thresh_counter) = recall_count(thresh_counter) + 1;
-                        else
-                            error_count(thresh_counter) = error_count(thresh_counter) + 1;
+                        if (Nordland_tunnel_skip == 1) %on Nordland, the traverses are aligned
+                            if (totalImagesQ > (id-11)) && (totalImagesQ < (id+11))  %up to 10 frames out in either direction
+                                recall_count(thresh_counter) = recall_count(thresh_counter) + 1;
+                            else
+                                error_count(thresh_counter) = error_count(thresh_counter) + 1;
+                            end
+                        else   %provided GPS mat file
+                            if (GT_file.GPSMatrix(Imstart_R+id,Imstart_Q+totalImagesQ)==1)
+                                %true positive
+                                recall_count(thresh_counter) = recall_count(thresh_counter) + 1;
+                            else  %false positive
+                                error_count(thresh_counter) = error_count(thresh_counter) + 1;
+                            end
                         end
                     end
                 end
 %--------------------------------------------------------------------------          
-                    %Now run second set of GT code, to generate template plot
-                    plot_thresh = 0.5; %threshold for generating the template graph
-                    BadSeq_flag = 0;
-                    for k = 1:(newSeqLength-1)
-                        if (seq(k+1) - seq(k)) < 0 
-                            BadSeq_flag = 1;
-                            break
-                        end
-                    end
-                    if quality > plot_thresh    
-                        BadSeq_flag = 1;
-                    end        
-                    if (BadSeq_flag == 1)
-                        Template_count_for_plot = Template_count_for_plot + 1;
-                        Template_plot(Template_count_for_plot,1) = totalImagesR + totalImagesQ;
-                        Template_plot(Template_count_for_plot,2) = Template_count_for_plot;     
-                    else                         
+                %Now run second set of GT code, to generate template plot
+                if quality > algSettings.plotThresh    
+                    Template_count_for_plot = Template_count_for_plot + 1;
+                    Template_plot(Template_count_for_plot,1) = totalImagesR + totalImagesQ;
+                    Template_plot(Template_count_for_plot,2) = Template_count_for_plot;
+                else                         
+                    if (Nordland_tunnel_skip == 1) %on Nordland, the traverses are aligned
                         if (totalImagesQ > (id-11)) && (totalImagesQ < (id+11))   %up to 10 frames out in either direction
                             recall_count2 = recall_count2 + 1;
                             truePositive(recall_count2,1) = totalImagesR + totalImagesQ;
@@ -265,52 +270,55 @@ if Video_option == 1
                             falsePositive(error_count2,1) = totalImagesR + totalImagesQ;
                             falsePositive(error_count2,2) = id;
                         end
+                    else   %provided GPS mat file
+                        if (GT_file.GPSMatrix(Imstart_R+id,Imstart_Q+totalImagesQ)==1)
+                            recall_count2 = recall_count2 + 1;
+                            truePositive(recall_count2,1) = totalImagesR + totalImagesQ;
+                            truePositive(recall_count2,2) = id;
+                        else
+                            error_count2 = error_count2 + 1;
+                            falsePositive(error_count2,1) = totalImagesR + totalImagesQ;
+                            falsePositive(error_count2,2) = id;
+                        end
                     end 
-%--------------------------------------------------------------------------                
-                if Plot == 1                    
-                    Nord_R.CurrentTime = id2Vid(id);
-                    Im_compare = readFrame(Nord_R);
-                    subplot(2,2,3,'replace');
-                    image(Im_compare);
-                    title('Matched Scene');
-                    
-                    if totalImagesQ == 1091 || totalImagesQ == 1497
-                        stop_point = 1;
-                    end
-
-                    plot_skip = plot_skip + 1;  %prevents compuational slow down
-                    if plot_skip > 9
-                        plot_skip = 0;
-                        subplot(2,2,2);
-                        title('Template Graph');
-                        xlabel('Frame Number');
-                        ylabel('Template Number');
-                        hold on 
-                        if ~exist('truePositive','var')
-
-                        else
-                            plot(truePositive(:,1),truePositive(:,2),'sg');
-                            hold on
-                        end
-                        if ~exist('falsePositive','var')
-
-                        else
-                            plot(falsePositive(:,1),falsePositive(:,2),'sr');
-                            hold on    
-                        end
-                        plot(Template_plot(:,1),Template_plot(:,2),'sr');
-                    end   
-                    drawnow;     
                 end
-%--------------------------------------------------------------------------                
+%--------------------------------------------------------------------------                                  
+                Nord_R.CurrentTime = id2Vid(id);
+                Im_compare = readFrame(Nord_R);
+                subplot(2,2,3,'replace');
+                image(Im_compare);
+                title('Matched Scene');
+                    
+                plot_skip = plot_skip + 1;  %prevents compuational slow down
+                if plot_skip > 9
+                    plot_skip = 0;
+                    subplot(2,2,2);
+                    title('Template Graph');
+                    xlabel('Frame Number');
+                    ylabel('Template Number');
+                    hold on
+                    if ~exist('truePositive','var')
+                        
+                    else
+                        plot(truePositive(:,1),truePositive(:,2),'sg');
+                        hold on
+                    end
+                    if ~exist('falsePositive','var')
+                        
+                    else
+                        plot(falsePositive(:,1),falsePositive(:,2),'sr');
+                        hold on
+                    end
+                    plot(Template_plot(:,1),Template_plot(:,2),'sr');
+                end
+                drawnow;
             end
-            Imcounter_Q = Imcounter_Q + 1;
-        end
-    end
+            Imcounter_Q = Imcounter_Q + Frame_skip;
+        end 
+    end 
 %--------------------------------------------------------------------------
-else        %Not Nordland    
+else        %Not Video    
 %--------------------------------------------------------------------------
-
 Query_file_type = strcat('*',Query_file_type);
 fQ = dir(fullfile(Query_folder,Query_file_type));
 
@@ -509,20 +517,19 @@ for ii = 1:totalImagesQ
         end        
 %--------------------------------------------------------------------------        
             %Now run second set of GT code, to generate template plot
-            plot_thresh = 0.3; %threshold for generating the template graph
-            if quality > plot_thresh    
+            if quality > algSettings.plotThresh    
                 Template_count_for_plot = Template_count_for_plot + 1;
                 Template_plot(Template_count_for_plot,1) = totalImagesR + ii;
                 Template_plot(Template_count_for_plot,2) = Template_count_for_plot;     
             else    
                 if (GT_file.GPSMatrix(Imstart_R+id,Imstart_Q+ii)==1)
                     recall_count2 = recall_count2 + 1;
-                    truePositive(recall_count2,1) = Imstart_Q + ii + totalImagesR;
-                    truePositive(recall_count2,2) = Imstart_R + id;
+                    truePositive(recall_count2,1) = ii + totalImagesR;
+                    truePositive(recall_count2,2) = id;
                 else
                     error_count2 = error_count2 + 1;
-                    falsePositive(error_count2,1) = Imstart_Q + ii + totalImagesR;
-                    falsePositive(error_count2,2) = Imstart_R + id;
+                    falsePositive(error_count2,1) = ii + totalImagesR;
+                    falsePositive(error_count2,2) = id;
                 end
             end 
 %--------------------------------------------------------------------------                      
