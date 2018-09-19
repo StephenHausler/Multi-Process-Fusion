@@ -8,7 +8,7 @@ Revision 0.4 due on 21/09/2018.
 Requirements:
 
 1) MATLAB 2017 or later.
-2) MATLAB Neural Network Toolbox.
+2) MATLAB Neural Network Toolbox and Image Processing Toolbox.
 3) Computer with stand-alone graphics hardware.
 4) A downloaded CNN caffemodel and prototxt (not included in this repository).
 
