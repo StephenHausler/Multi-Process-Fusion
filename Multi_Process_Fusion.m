@@ -3,8 +3,8 @@
 %   Author: Stephen Hausler
 %   
 %   Open Source Code, requires MATLAB with Neural Network Toolbox
-%   Refer to LICENSES.txt for license to this source code and all 3rd party
-%   licences.
+%   Refer to LICENSES.txt for license to this source code and 3RD_PARTY_
+%   LICENSES for all 3rd party licences.
 %--------------------------------------------------------------------------
 
 clear variables
@@ -16,27 +16,37 @@ global id2Vid
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
 %Dataset load:
-%is it images or video:
-Video_option = 0;  % 0 = images, 1 = video
+%Are you using a folder of images or a video file:
+Video_option = 0;           % 0 = images, 1 = video
 Nordland_tunnel_skip = 0;   %only set to 1 if using Nordland video and want
 %to skip all the tunnels (skips are hardcoded in DatabaseLoad.m).
-%also if select this option, don't need to provide a GPS file as the
-%traverses are aligned.
+%also if you select this option, you don't need to provide a GPS file as the
+%traverses are aligned on Nordland.
 
 %Reference Database File Address (provide full path to folder containing images or video):
-Ref_folder = 'D:\Windows\St_Lucia_Dataset\0845_15FPS\Frames';
+Ref_folder = 'D:\Windows\St_Lucia_Dataset\0845_15FPS\Frames';   
 Ref_file_type = '.jpeg';     
 Imstart_R = 0;  %start dataset after this many frames or seconds for video.
 finalImage_R = 3945; %For St Lucia dataset, this is where the first loop ends
+%Video settings:
+% Ref_folder = 'D:\Windows\Nordland\nordland_summer';
+% Ref_file_type = '.mp4';
+% Imstart_R = 180;
+% %finalImage_R = 6060;
 
 %Query Database File Address (provide full path to folder containing images or video):
 Query_folder = 'D:\Windows\St_Lucia_Dataset\1545_15FPS\Frames';
 Query_file_type = '.jpeg';
 Imstart_Q = 0;  %start dataset after this many frames or seconds for video.
 finalImage_Q = 4000;
+%Video settings:
+% Query_folder = 'D:\Windows\Nordland\nordland_winter';
+% Query_file_type = '.mp4';
+% Imstart_Q = 180;
+% %finalImage_Q = 6060;
 
 Frame_skip = 1;     %Duel use variable: for images, this means use every ith frame
-%for videos, this means extract out of video at this FPS.
+%for videos, this means extract frames out of video at this FPS.
 
 %Ground truth load:
 %Load a ground truth correspondance matrix.
@@ -81,17 +91,13 @@ qROC_Smooth = 0;        % True: Smooth quality scores over sequence using a movi
 % welcome to use either option to see what works best for your specific
 % application.
 
-%put the query traverse specific settings into a struct for improved
-%readability
 algSettings = struct('thresh',thresh,'maxSeqLength',maxSeqLength,'minSeqLength',...
     minSeqLength,'obsThresh',obsThresh,'minVelocity',minVelocity,'maxVelocity',...
     maxVelocity,'Qt',Qt,'Rwindow',Rwindow,'qROC_Smooth',qROC_Smooth,...
     'epsilon',epsilon,'plotThresh',plotThresh);
 
-%TODO: allow for different types of user-provided image processing code
-%files.
 %Image processing method adjustable settings:
-Initial_crop = [20 60 0 0];  %crop amount in pixels top, bottom, left, right
+Initial_crop = [0 0 0 0];  %crop amount in pixels top, bottom, left, right
 Initial_crop = Initial_crop + 1;    %only needed because MATLAB starts arrays from index 1.
 
 SAD_resolution = [64 32];       %width by height

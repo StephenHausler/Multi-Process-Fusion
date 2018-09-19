@@ -60,11 +60,12 @@ hold on
     
 %Recall route--------------------------------------------------------------
 if Video_option == 1
-    vidQ = VideoReader(fullfile(Query_folder,Query_file_type));
+    vidQ = VideoReader(strcat(Query_folder,Query_file_type));
+    vidR = VideoReader(strcat(Ref_folder,Ref_file_type));
     skipIndices = [1290 2040; 2210 2355; 2500 2660; 3400 3670; 5050 5460; 6060 6220]; %if using Nordland
     Imcounter_Q = Imstart_Q;
     totalImagesQ = 0;
-    while Imcounter_Q < finalIndex_Q
+    while Imcounter_Q < finalImage_Q
         if (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(1,1)) && (Imcounter_Q < skipIndices(1,2))) 
             Imcounter_Q = Imcounter_Q + Frame_skip;
         elseif (Nordland_tunnel_skip == 1) && ((Imcounter_Q > skipIndices(2,1)) && (Imcounter_Q < skipIndices(2,2))) 
@@ -283,8 +284,8 @@ if Video_option == 1
                     end 
                 end
 %--------------------------------------------------------------------------                                  
-                Nord_R.CurrentTime = id2Vid(id);
-                Im_compare = readFrame(Nord_R);
+                vidR.CurrentTime = id2Vid(id);
+                Im_compare = readFrame(vidR);
                 subplot(2,2,3,'replace');
                 image(Im_compare);
                 title('Matched Scene');

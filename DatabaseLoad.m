@@ -79,7 +79,7 @@ if Video_option == 0
         Template_array4(Template_count,:) = template4;
     end
 else
-    vidR = VideoReader(fullfile(Ref_folder,Ref_file_type));
+    vidR = VideoReader(strcat(Ref_folder,Ref_file_type));
     skipIndices = [1290 2040; 2210 2355; 2500 2660; 3400 3670; 5050 5460; 6060 6220]; %if using Nordland
     Imcounter_R = Imstart_R;
     totalImagesR = 0;
@@ -127,7 +127,7 @@ else
             
             Template_array1(Template_count,:) = template1;
             Template_array2(1,:,Template_count) = template2(1,:);
-            Template_array2(2,:,Template_count) = template1(2,:);
+            Template_array2(2,:,Template_count) = template2(2,:);
             Template_array3(Template_count,:) = template3;
             Template_array4(Template_count,:) = template4;
             

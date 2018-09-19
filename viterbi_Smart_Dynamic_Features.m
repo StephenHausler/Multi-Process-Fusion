@@ -11,14 +11,12 @@ oo2 = O2(Y,:)';
 oo3 = O3(Y,:)';
 oo4 = O4(Y,:)';
 
-%take logs of parameters for faster processing using addition
-%using logs of parameters is the essential step that enables the
-%ratio score system to work so well.
 T = log(T);
 oo1L = log(oo1);
 oo2L = log(oo2);
 oo3L = log(oo3);
 oo4L = log(oo4);
+%log of a number less than 1 is a negative number  
 %log(0.001) = -6.9078 (worst)
 %log(0.999) = -0.0010 (best)
 
@@ -39,14 +37,14 @@ end
 %multiplication) and amplifies the quality discrimination by creating a
 %non-linearity in the quality scoring.
 [min_values,min_indicies] = max(fullObs,[],1);   %max value of each column
-%log of a number less than 1 is a negative number           
+         
 for i = 1:tau
     window = max(1, min_indicies(i)-Rwindow):min(length(fullObs), min_indicies(i)+Rwindow);
     not_window = setxor(1:length(fullObs), window);
     min_value_2nd = max(fullObs(not_window,i));
     quality(i) = min_values(i) / min_value_2nd;
 end
-%Try calculating a moving average quality over the sequence:
+%Option of calculating a moving average quality over the sequence:
 %(choice of 'smoothed' or 'not-smoothed' quality ROC).
 if qROC_Smooth == 1
     for i = 1:tau
@@ -73,7 +71,7 @@ end
 [qCompare,seqStart] = min(qROC);   %greatest positive or negative Rate Of Change
 %negative ROC is the point the sequence goes from 'bad' to 'good'.
 
-%if no ROC is great enough, set seqStart to 0
+%if no ROC is great enough, set seqStart to 0 (longest sequence length)
 if abs(qCompare) < Qt
     seqStart = 0;
 end
@@ -88,9 +86,9 @@ oo1L = int16(oo1L*1000);
 oo2L = int16(oo2L*1000);
 oo3L = int16(oo3L*1000);
 oo4L = int16(oo4L*1000);
-%this results in a significant code speed-up
+%this has been found to result in a significant computational speed-up
 
-%initialize
+%initialize Viterbi variables
 delta=zeros(kk,tau);  H=zeros(kk,tau); S=zeros(1,tau);
 delta = int16(delta);
 H(:,1) = 0;
@@ -120,7 +118,7 @@ for i = 2:tau
     end
 end
 
-[~,S(tau)] = max(delta(:,tau)); %log of a number less than 1 is a negative number
+[~,S(tau)] = max(delta(:,tau)); 
 quality_total = 0;
   
 for k=(tau-1):-1:1
