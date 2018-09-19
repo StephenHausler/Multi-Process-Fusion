@@ -41,8 +41,10 @@ Frame_skip = 1;     %Duel use variable: for images, this means use every ith fra
 GT_file = load('D:\Windows\St_Lucia_Dataset\StLucia_GPSMatrix.mat');
 
 %Neural Network load:
-datafile = './HybridNet/HybridNet.caffemodel';
-protofile = './HybridNet/deploy.prototxt';
+% datafile = './HybridNet/HybridNet.caffemodel';
+% protofile = './HybridNet/deploy.prototxt';
+datafile = 'D:\Windows\MATLAB\Caffe_model_vgg16/vgg16_places365.caffemodel';
+protofile = 'D:\Windows\MATLAB\Caffe_model_vgg16/deploy_vgg16_places365.prototxt';
 net = importCaffeNetwork(protofile,datafile);
 
 %Algorithm adjustable settings:
@@ -94,7 +96,7 @@ SAD_patchSize = 8;
 HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
-actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
+actLayer = 24;      %default for HybridNet is Conv-5 ReLu layer
 %Need to adjust this for the neural network you use.
 
 %END OF ADJUSTABLE SETTINGS
@@ -120,6 +122,10 @@ actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
 precision
 recall
 
+%Plot the filter proportions:
+figure
+labels = {'CNN','CNND','HOG','SAD'};
+pie(worstIDCounter,labels);
 
 
 
