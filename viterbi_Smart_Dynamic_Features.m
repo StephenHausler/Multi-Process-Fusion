@@ -1,9 +1,8 @@
-function [S,quality_total,seqLength] = viterbi_Smart_Dynamic_Features(Y,T,O1,O2,O3,O4,minSeqLength,Rwindow,worstIDArray,qROC_Smooth)
+function [S,quality_total,seqLength] = viterbi_Smart_Dynamic_Features(Y,T,...
+    O1,O2,O3,O4,minSeqLength,Rwindow,worstIDArray,qROC_Smooth,Qt)
 
 %MultiProcessFusion, compute the worst processing method by sequence and at the
 %very beginning of this function.
-
-global Qt;
     
 tau = length(Y); [~,kk] = size(O1); 
 

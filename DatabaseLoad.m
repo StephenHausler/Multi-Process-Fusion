@@ -7,13 +7,12 @@
 %   licences.
 %--------------------------------------------------------------------------
 
-function [Template_array1,Template_array2,Template_array3,Template_array4] = DatabaseLoad(varargin)
+function [Template_array1,Template_array2,Template_array3,Template_array4,...
+    totalImagesR,Template_count,Template_plot] = DatabaseLoad(varargin)
 
-global totalImagesR
-global Template_count
-global Template_plot
-global Nordland_tunnel_skip
-global id2Vid
+Template_count = 0;
+% global Nordland_tunnel_skip
+% global id2Vid
 
 if nargin == 14
     Video_option = varargin{1};

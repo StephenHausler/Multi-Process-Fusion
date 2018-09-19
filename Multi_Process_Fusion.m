@@ -8,15 +8,10 @@
 %--------------------------------------------------------------------------
 
 clear variables
-clear global        %REMOVE THIS AND REWRITE TO REMOVE ALL GLOBAL VARIABLES
-%global variables:
-global totalImagesR
-global totalImagesQ
-global Template_count
-global Template_plot
-global Nordland_tunnel_skip
-global id2Vid
-Template_count = 0;
+% clear global        
+% %global variables:
+% global Nordland_tunnel_skip
+% global id2Vid
 
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
@@ -66,7 +61,11 @@ Qt = 0.1;               %Quality rate-of-change threshold
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 20;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
-%5 meters ~= Rwindow of 20, 10 meters ~= 10, 20 meters ~= 5.
+%In the paper, we used a Rwindow of 30 for St Lucia and Campus, 20 for
+%RobotCar and 10 for Nordland.
+%However, post submission we discovered that a Rwindow of 20 is better for
+%St Lucia since we achieve 63% recall at 100% precision rather than 47%
+%recall at 100% precision.
 
 %Boolean Flags setting algorithm options
 Normalise = 1;          % True: Perform normalisation on CNN feature vectors
@@ -102,7 +101,8 @@ actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
 %--------------------------------------------------------------------------
 
 %Run reference traverse
-[Template_array1,Template_array2,Template_array3,Template_array4] = ...
+[Template_array1,Template_array2,Template_array3,Template_array4,...
+    totalImagesR,Template_count,Template_plot] = ...
     DatabaseLoad(Video_option,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
     HOG_cellSize,Initial_crop,Normalise,finalImage_R);
@@ -112,9 +112,10 @@ actLayer = 15;      %default for HybridNet is Conv-5 ReLu layer
     Video_option,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
     HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
-    Template_array2,Template_array3,Template_array4,GT_file,algSettings,finalImage_Q);
+    Template_array2,Template_array3,Template_array4,GT_file,algSettings,...
+    finalImage_Q,totalImagesR,Template_count,Template_plot);
 
-%Now plot/display results...
+%Now display results:
 
 precision
 recall

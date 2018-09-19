@@ -8,20 +8,8 @@ function [precision,recall,truePositive,falsePositive,worstIDCounter] = Multi_Pr
 %---    recognition is performed.               ---
 %--------------------------------------------------
 
-%Define global variables
-global totalImagesR
-global totalImagesQ
-global Template_count
-global Template_plot
-% global imcounter_R
-% global Imcounter_Q
-% global Imstart_R
-% global Imstart_Q
-% global finalIndex_R         %Nordland only
-% global finalIndex_Q         %Nordland only
-
 %Process function inputs
-if nargin == 23   
+if nargin == 26   
     Video_option = varargin{1};
     Ref_folder = varargin{2};
     Ref_file_type = varargin{3};
@@ -45,6 +33,9 @@ if nargin == 23
     GT_file = varargin{21};
     algSettings = varargin{22};
     finalImage_Q = varargin{23};
+    totalImagesR = varargin{24};
+    Template_count = varargin{25};
+    Template_plot = varargin{26};
 else
     error('Incorrect number of inputs to function');
 end
@@ -226,14 +217,16 @@ if Video_option == 1
             if totalImagesQ > algSettings.maxSeqLength
                 S = (totalImagesQ - algSettings.maxSeqLength + 1):totalImagesQ;
                 
-                [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features(S,T,O1,O2,O3,O4,algSettings.minSeqLength,algSettings.Rwindow,worstIDArray);
+                [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features...
+                    (S,T,O1,O2,O3,O4,algSettings.minSeqLength,...
+                    algSettings.Rwindow,worstIDArray,algSettings.Qt);
             
                 quality = quality/newSeqLength;
                 
                 id = seq(newSeqLength);
 %--------------------------------------------------------------------------                
                 %loop through every threshold to generate PR curve.
-                for thresh_counter = 1:length(thresh)
+                for thresh_counter = 1:length(algSettings.thresh)
                     if quality > thresh(thresh_counter)
                         %no 'new scenes' should be found in Nordland
                         false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
@@ -489,7 +482,8 @@ for ii = 1:totalImagesQ
         S = (ii-algSettings.maxSeqLength+1):ii;  %length(S) should be equal to maxSeqLength.
 
         [seq,quality,newSeqLength] = viterbi_Smart_Dynamic_Features(S,T,O1,O2,O3,O4,...
-            algSettings.minSeqLength,algSettings.Rwindow,worstIDArray,algSettings.qROC_Smooth);        
+            algSettings.minSeqLength,algSettings.Rwindow,worstIDArray,...
+            algSettings.qROC_Smooth,algSettings.Qt);        
         
         quality = quality/newSeqLength;
             
@@ -565,7 +559,7 @@ for ii = 1:totalImagesQ
 end
 end
 %--------------------------------------------------------------------------
-for thresh_counter = 1:length(thresh)
+for thresh_counter = 1:length(algSettings.thresh)
     %Recall = true positives / (true positives + false negatives)
     recall(thresh_counter) = recall_count(thresh_counter)/(recall_count(thresh_counter) + false_negative_count(thresh_counter));
     %Precision = true positives / (true positives + false positives)
