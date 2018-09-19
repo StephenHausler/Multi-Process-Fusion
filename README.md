@@ -30,7 +30,7 @@ Detailed instructions for testing on the St Lucia dataset:
 3) To download the St Lucia dataset, please go to https://wiki.qut.edu.au/display/cyphy/St+Lucia+Multiple+Times+of+Day and download "180809_1545" and "190809_0845". 
 4) Then copy the first 4000 images out of "180809_1545" and place them into a separate folder. This is the query dataset. 
 5) Then copy the first 3945 images out of "190809_0845" and place them into a separate folder. This is the reference dataset. The number of images is set such that there is only one query image per location and no double-ups. The code will still work with double-ups, however the performance will drop as the matching scoring algorithm will find these double-ups and assume that severe perceptual aliasing is present. 
-6) Then edit "Multi_Process_Fusion.m" and rename "Ref_folder" and "Query_folder" to point to the file locations where you saved the reference and query datasets.
+6) Then edit "Multi_Process_Fusion.m" and rename "Ref_folder" and "Query_folder" to point to the file locations where you saved the reference and query datasets. Also edit "GT_file" to point to the save location of the GPS .mat file.
 7) Edit "datafile" and "protofile" to point to the file locations where you saved your Caffemodel and prototxt files. Then edit actLayer for the layer you wish to extract features from. Recommend setting to 15 for HybridNet and 24 for VGG-16.
 7) Other settings can be left as-is, however experimentation can be made by varying different settings, such as the minimum and maximum sequence length, the quality rate-of-change threshold, and the Rwindow value.
 
