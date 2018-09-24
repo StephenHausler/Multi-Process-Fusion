@@ -4,8 +4,7 @@ Paper under review for IEEE RAL.
 Copyright: Stephen Hausler
 
 ChangeLog:
-Currently at Revision 0.3.
-Revision 0.4 due on 21/09/2018.
+Currently at Revision 0.4.
 
 190918: fixed bug that caused error at end of dataset immediately prior to printing the precision-recall curves.
 
