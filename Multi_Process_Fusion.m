@@ -97,7 +97,7 @@ algSettings = struct('thresh',thresh,'maxSeqLength',maxSeqLength,'minSeqLength',
     'epsilon',epsilon,'plotThresh',plotThresh);
 
 %Image processing method adjustable settings:
-Initial_crop = [0 0 0 0];  %crop amount in pixels top, bottom, left, right
+Initial_crop = [20 60 0 0];  %crop amount in pixels top, bottom, left, right
 Initial_crop = Initial_crop + 1;    %only needed because MATLAB starts arrays from index 1.
 
 SAD_resolution = [64 32];       %width by height
