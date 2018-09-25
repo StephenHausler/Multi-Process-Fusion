@@ -231,7 +231,7 @@ if Video_option == 1
                             %no 'new scenes' should be found in Nordland
                             false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
                         else  %provided GPS mat file
-                            if sum(GT_file.GPSMatrix(Imstart_Q+totalImagesQ)) == 0
+                            if sum(GT_file.GPSMatrix(:,Imstart_Q+totalImagesQ)) == 0
                                 %true negative
                             else
                                 false_negative_count(thresh_counter) = false_negative_count(thresh_counter) + 1;
@@ -501,7 +501,7 @@ for ii = 1:totalImagesQ
         %loop through every threshold to generate the PR curve.
         for thresh_counter = 1:length(algSettings.thresh)
             if quality > algSettings.thresh(thresh_counter)
-                if sum(GT_file.GPSMatrix(Imstart_Q+ii,:))==0
+                if sum(GT_file.GPSMatrix(:,Imstart_Q+ii))==0 %something is wrong here...
                     %true negative
                 else
                     %false negative
