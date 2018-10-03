@@ -22,7 +22,7 @@ Getting Started:
 
 1) Obtain CNN model files. For HybridNet, permission must be attained from the original author. Other networks will also work, such as VGG-16 trained on Places365.
 2) To begin, launch MATLAB and open Multi_Process_Fusion.m.
-3) Edit the adjustable settings for your particular dataset.
+3) Edit the adjustable settings for your particular dataset. Works with both individual images and video files.
 4) Run the file. Note: the reference traverse will take several minutes with no intermediate feedback. Once the query traverse begins, a figure will display the recognition process.
 
 
