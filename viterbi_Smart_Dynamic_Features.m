@@ -23,6 +23,8 @@ oo4L = log(oo4);
 %for each element in worstIDArray, modify the choice of observations used.
 for i=1:tau
     switch worstIDArray(Y(i))
+        case 0
+            fullObs(:,i) = oo1L(:,i) + oo2L(:,i) + oo3L(:,i) + oo4L(:,i);
         case 1
             fullObs(:,i) = oo2L(:,i) + oo3L(:,i) + oo4L(:,i);
         case 2
@@ -94,6 +96,8 @@ delta = int16(delta);
 H(:,1) = 0;
 
 switch worstIDArray(Y(1))
+    case 0
+        delta(:,1) = oo1L(:,seqStart+1) + oo2L(:,seqStart+1) + oo3L(:,seqStart+1) + oo4L(:,seqStart+1);
     case 1
         delta(:,1) = oo2L(:,seqStart+1) + oo3L(:,seqStart+1) + oo4L(:,seqStart+1);
     case 2
@@ -107,6 +111,8 @@ end
 for i = 2:tau
     [delta(:,i),H(:,i)] = max((repmat(delta(:,i-1),1,kk)+T),[],1);
     switch worstIDArray(Y(i))
+        case 0
+            delta(:,i) = delta(:,i)+oo1L(:,i+seqStart)+oo2L(:,i+seqStart)+oo3L(:,i+seqStart)+oo4L(:,i+seqStart);
         case 1
             delta(:,i) = delta(:,i)+oo2L(:,i+seqStart)+oo3L(:,i+seqStart)+oo4L(:,i+seqStart);
         case 2
