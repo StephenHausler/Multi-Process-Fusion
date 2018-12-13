@@ -4,8 +4,9 @@ Paper under review for IEEE RAL.
 Copyright: Stephen Hausler
 
 ChangeLog:
-Currently at Revision 0.4.
+Currently at Revision 1.0.
 
+131218: Made a collection of changes in response to reviewer feedback. In particular, the worstID algorithm has changed.
 190918: fixed bug that caused error at end of dataset immediately prior to printing the precision-recall curves.
 
 
@@ -22,7 +23,7 @@ Getting Started:
 
 1) Obtain CNN model files. For HybridNet, permission must be attained from the original author. Other networks will also work, such as VGG-16 trained on Places365.
 2) To begin, launch MATLAB and open Multi_Process_Fusion.m.
-3) Edit the adjustable settings for your particular dataset. Works with both individual images and video files.
+3) Edit the adjustable settings for your particular dataset. Requires a collection of individual images.
 4) Run the file. Note: the reference traverse will take several minutes with no intermediate feedback. Once the query traverse begins, a figure will display the recognition process.
 
 
