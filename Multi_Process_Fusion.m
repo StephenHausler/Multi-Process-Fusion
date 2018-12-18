@@ -12,11 +12,12 @@ clear variables
 global PlotOption   %this variables sets if plots are generated
 PlotOption = 1;
 
-%Dataset Selection:
+%Dataset Selection: 
     Lucia = 1;
     Oxford = 0;
     Nordland = 0;
     Campus = 0;
+%Set each to 1 to run each dataset. Please note that each dataset has its own individual settings.
 
 %--------------------------------------------------------------------------
 if Lucia == 1
@@ -70,6 +71,7 @@ plotThresh = 0.4;       %Quality threshold for template plot graph
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 20;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
+%Default value (which has been experimentally tested as being a suitable default value) is 20 frames.
 
 %Boolean Flags setting algorithm options
 Normalise = 1;          % True: Perform normalisation on CNN feature vectors
@@ -180,6 +182,7 @@ plotThresh = 0.4;       %Quality threshold for template plot graph
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 20;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
+%Default value (which has been experimentally tested as being a suitable default value) is 20 frames.
 
 %Boolean Flags setting algorithm options
 Normalise = 1;          % True: Perform normalisation on CNN feature vectors
@@ -294,6 +297,7 @@ plotThresh = 0.4;       %Quality threshold for template plot graph
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 10;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
+%Default value (which has been experimentally tested as being a suitable default value) is 20 frames.
 
 %Boolean Flags setting algorithm options
 Normalise = 1;          % True: Perform normalisation on CNN feature vectors
@@ -405,6 +409,7 @@ plotThresh = 0.4;       %Quality threshold for template plot graph
 %(the minimum ROC to trigger a detection in a change of environment novelty)
 Rwindow = 30;           %Change this to reflect the approximate distance 
 %between frames and the localisation accuracy required.
+%Default value (which has been experimentally tested as being a suitable default value) is 20 frames.
 
 %Boolean Flags setting algorithm options
 Normalise = 1;          % True: Perform normalisation on CNN feature vectors
