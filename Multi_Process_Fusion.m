@@ -13,7 +13,7 @@ global PlotOption   %this variables sets if plots are generated
 PlotOption = 1;
 
 %Dataset Selection:
-    Lucia = 1;
+    Lucia = 0;
     Oxford = 1;
     Nordland = 1;
     Campus = 1;
@@ -132,7 +132,7 @@ end
 %--------------------------------------------------------------------------
 if Oxford == 1
     
-clear variables      
+%clear variables      
 
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
@@ -245,7 +245,7 @@ end
 %--------------------------------------------------------------------------
 if Nordland == 1
 
-clear variables      
+%clear variables      
 
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
@@ -362,7 +362,7 @@ end
 %--------------------------------------------------------------------------
 if Campus == 1
 
-clear variables      
+%clear variables      
 
 %--------------------------------------------------------------------------
 %START OF ADJUSTABLE SETTINGS
