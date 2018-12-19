@@ -6,7 +6,7 @@ Copyright: Stephen Hausler
 ChangeLog:
 Currently at Revision 1.1.
 
-191218: Added additional option to set the image resizing value for the CNN input. Set to 227 by 227 for HybridNet and 224 by 224 for Vgg-16.  
+191218: Added additional option to set the image resizing value for the CNN input. Set to 227 by 227 for HybridNet and 224 by 224 for Vgg-16. Also fixed an out-of-memory bug when running the previous version of this code in R2018b.  
 131218: Made a collection of changes in response to reviewer feedback. In particular, the worstID algorithm has changed.  
 190918: fixed bug that caused error at end of dataset immediately prior to printing the precision-recall curves.
 
