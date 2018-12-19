@@ -12,11 +12,11 @@ clear variables
 global PlotOption   %this variables sets if plots are generated
 PlotOption = 1;
 
-%Dataset Selection: 
+%Dataset Selection:
     Lucia = 1;
-    Oxford = 0;
-    Nordland = 0;
-    Campus = 0;
+    Oxford = 1;
+    Nordland = 1;
+    Campus = 1;
 %Set each to 1 to run each dataset. Please note that each dataset has its own individual settings.
 
 %--------------------------------------------------------------------------
@@ -97,6 +97,8 @@ SAD_patchSize = 8;
 HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
+CNN_resolution = [227 227];     %224 by 224 for vgg-16 and 227 by 227 for HybridNet
+
 %actLayer = 24; %for VGG-16 (note: VGG-16 will run slower than HybridNet)     
 actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
 %Need to adjust this for the neural network you use.
@@ -109,7 +111,7 @@ actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
     totalImagesR,Template_count,Template_plot] = ...
     DatabaseLoad(NordlandGT,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
-    HOG_cellSize,Initial_crop,Normalise,finalImage_R);
+    HOG_cellSize,CNN_resolution,Initial_crop,Normalise,finalImage_R);
 
 Mem = whos;
 
@@ -117,7 +119,7 @@ Mem = whos;
 [precision,recall,truePositive,falsePositive,worstIDCounter,AverageComputeTime,TotalComputeTime] = Multi_Process_Fusion_Run(...
     NordlandGT,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
-    HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
+    HOG_resolution,HOG_cellSize,CNN_resolution,Initial_crop,Normalise,Template_array1,...
     Template_array2,Template_array3,Template_array4,GT_file,algSettings,...
     finalImage_Q,totalImagesR,Template_count,Template_plot);
 
@@ -208,6 +210,8 @@ SAD_patchSize = 8;
 HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
+CNN_resolution = [227 227];     %224 by 224 for vgg-16 and 227 by 227 for HybridNet
+
 %actLayer = 24;  %for VGG-16 (note: VGG-16 will run slower than HybridNet)         
 actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
 %Need to adjust this for the neural network you use.
@@ -220,7 +224,7 @@ actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
     totalImagesR,Template_count,Template_plot] = ...
     DatabaseLoad(NordlandGT,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
-    HOG_cellSize,Initial_crop,Normalise,finalImage_R);
+    HOG_cellSize,CNN_resolution,Initial_crop,Normalise,finalImage_R);
 
 Mem = whos;
 
@@ -228,7 +232,7 @@ Mem = whos;
 [precision,recall,truePositive,falsePositive,worstIDCounter,AverageComputeTime,TotalComputeTime] = Multi_Process_Fusion_Run(...
     NordlandGT,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
-    HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
+    HOG_resolution,HOG_cellSize,CNN_resolution,Initial_crop,Normalise,Template_array1,...
     Template_array2,Template_array3,Template_array4,GT_file,algSettings,...
     finalImage_Q,totalImagesR,Template_count,Template_plot);
 
@@ -323,6 +327,8 @@ SAD_patchSize = 8;
 HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
+CNN_resolution = [227 227];     %227 for hybridnet and 224 for vgg-16
+
 %actLayer = 24;  %for VGG-16 (note: VGG-16 will run slower than HybridNet)    
 actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
 %Need to adjust this for the neural network you use.
@@ -335,7 +341,7 @@ actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
     totalImagesR,Template_count,Template_plot] = ...
     DatabaseLoad(NordlandGT,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
-    HOG_cellSize,Initial_crop,Normalise,finalImage_R);
+    HOG_cellSize,CNN_resolution,Initial_crop,Normalise,finalImage_R);
 
 Mem = whos;
 
@@ -343,7 +349,7 @@ Mem = whos;
 [precision,recall,truePositive,falsePositive,worstIDCounter,AverageComputeTime,TotalComputeTime] = Multi_Process_Fusion_Run(...
     NordlandGT,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
-    HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
+    HOG_resolution,HOG_cellSize,CNN_resolution,Initial_crop,Normalise,Template_array1,...
     Template_array2,Template_array3,Template_array4,GT_file,algSettings,...
     finalImage_Q,totalImagesR,Template_count,Template_plot);
 
@@ -435,6 +441,8 @@ SAD_patchSize = 8;
 HOG_resolution = [640 320];     %width by height
 HOG_cellSize = [32 32];         
 
+CNN_resolution = [227 227];     %224 for vgg-16 and 227 for HybridNet
+
 %actLayer = 24;  %for VGG-16 (note: VGG-16 will run slower than HybridNet)    
 actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
 %Need to adjust this for the neural network you use.
@@ -447,7 +455,7 @@ actLayer = 15; %default for HybridNet is Conv-5 ReLu layer
     totalImagesR,Template_count,Template_plot] = ...
     DatabaseLoad(Video_option,Ref_folder,Ref_file_type,Imstart_R,...
     Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,HOG_resolution,...
-    HOG_cellSize,Initial_crop,Normalise,finalImage_R);
+    HOG_cellSize,CNN_resolution,Initial_crop,Normalise,finalImage_R);
 
 Mem = whos;
 
@@ -455,7 +463,7 @@ Mem = whos;
 [precision,recall,truePositive,falsePositive,worstIDCounter,AverageComputeTime,TotalComputeTime] = Multi_Process_Fusion_Run(...
     Video_option,Ref_folder,Ref_file_type,Query_folder,Query_file_type,...
     Imstart_Q,Imstart_R,Frame_skip,net,actLayer,SAD_resolution,SAD_patchSize,...
-    HOG_resolution,HOG_cellSize,Initial_crop,Normalise,Template_array1,...
+    HOG_resolution,HOG_cellSize,CNN_resolution,Initial_crop,Normalise,Template_array1,...
     Template_array2,Template_array3,Template_array4,GT_file,algSettings,...
     finalImage_Q,totalImagesR,Template_count,Template_plot);
 

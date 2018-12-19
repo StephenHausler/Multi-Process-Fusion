@@ -11,10 +11,8 @@ function [Template_array1,Template_array2,Template_array3,Template_array4,...
     totalImagesR,Template_count,Template_plot] = DatabaseLoad(varargin)
 
 Template_count = 0;
-global Nordland_tunnel_skip
-global id2Vid
 
-if nargin == 14
+if nargin == 15
     Video_option = varargin{1};
     Ref_folder = varargin{2};
     Ref_file_type = varargin{3};
@@ -26,9 +24,10 @@ if nargin == 14
     SAD_patchSize = varargin{9};
     HOG_resolution = varargin{10};
     HOG_cellSize = varargin{11};
-    Initial_crop = varargin{12};
-    Normalise = varargin{13};
-    finalImage_R = varargin{14};
+    CNN_resolution = varargin{12};
+    Initial_crop = varargin{13};
+    Normalise = varargin{14};
+    finalImage_R = varargin{15};
 else
     error('invalid number of inputs');
 end
@@ -54,7 +53,7 @@ end
         sz = size(Im);
         Im = Im((Initial_crop(1):(sz(1)-Initial_crop(2))),Initial_crop(3):(sz(2)-Initial_crop(4)),:);
         
-        Im1 = imresize(Im,[227 227],'lanczos3');  %for CNN
+        Im1 = imresize(Im,[CNN_resolution(2) CNN_resolution(1)],'lanczos3');  %for CNN
         Im2 = rgb2gray(Im);
         Im3 = imresize(Im2,[HOG_resolution(2) HOG_resolution(1)],'lanczos3'); %downsize for HOG
         Im4 = imresize(Im2,[SAD_resolution(2) SAD_resolution(1)],'lanczos3'); %downsize for SAD

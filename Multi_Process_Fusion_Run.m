@@ -4,7 +4,7 @@ function [precision,recall,truePositive,falsePositive,...
 global PlotOption
 
 %Process function inputs
-if nargin == 26   
+if nargin == 27   
     NordlandGT = varargin{1};
     Ref_folder = varargin{2};
     Ref_file_type = varargin{3};
@@ -19,18 +19,19 @@ if nargin == 26
     SAD_patchSize = varargin{12};
     HOG_resolution = varargin{13};
     HOG_cellSize = varargin{14};
-    Initial_crop = varargin{15};
-    Normalise = varargin{16};
-    Template_array1 = varargin{17};
-    Template_array2 = varargin{18};
-    Template_array3 = varargin{19};
-    Template_array4 = varargin{20};
-    GT_file = varargin{21};
-    algSettings = varargin{22};
-    finalImage_Q = varargin{23};
-    totalImagesR = varargin{24};
-    Template_count = varargin{25};
-    Template_plot = varargin{26};
+    CNN_resolution = varargin{15};
+    Initial_crop = varargin{16};
+    Normalise = varargin{17};
+    Template_array1 = varargin{18};
+    Template_array2 = varargin{19};
+    Template_array3 = varargin{20};
+    Template_array4 = varargin{21};
+    GT_file = varargin{22};
+    algSettings = varargin{23};
+    finalImage_Q = varargin{24};
+    totalImagesR = varargin{25};
+    Template_count = varargin{26};
+    Template_plot = varargin{27};
 else
     error('Incorrect number of inputs to function');
 end
@@ -105,7 +106,7 @@ tic
                 if ((k-j) >= algSettings.minVelocity) && ((k-j) <= algSettings.maxVelocity) 
                     T(j,k) = 1; 
                 else
-                    T(j,k) = 0.001; 
+                    T(j,k) = 0.001;
                 end
             end
         end
@@ -120,7 +121,7 @@ tic
     sz = size(Im);
     Im = Im(Initial_crop(1):(sz(1)-Initial_crop(2)),Initial_crop(3):(sz(2)-Initial_crop(4)),:);
 
-    Im1 = imresize(Im,[227 227],'lanczos3');    %for CNN
+    Im1 = imresize(Im,[CNN_resolution(2) CNN_resolution(1)],'lanczos3');    %for CNN
     Im2 = rgb2gray(Im);
     Im3 = imresize(Im2,[HOG_resolution(2) HOG_resolution(1)],'lanczos3');     %downsize for HOG
     Im4 = imresize(Im2,[SAD_resolution(2) SAD_resolution(1)],'lanczos3');     %downsize for SAD
