@@ -6,8 +6,8 @@ Copyright: Stephen Hausler
 ChangeLog:
 Currently at Revision 1.1.
 
-191218: Added additional option to set the image resizing value for the CNN input. Set to 227 by 227 for HybridNet and 224 by 224 for Vgg-16.
-131218: Made a collection of changes in response to reviewer feedback. In particular, the worstID algorithm has changed.
+191218: Added additional option to set the image resizing value for the CNN input. Set to 227 by 227 for HybridNet and 224 by 224 for Vgg-16.  
+131218: Made a collection of changes in response to reviewer feedback. In particular, the worstID algorithm has changed.  
 190918: fixed bug that caused error at end of dataset immediately prior to printing the precision-recall curves.
 
 
@@ -43,8 +43,8 @@ Detailed instructions for testing on the St Lucia dataset:
 
 Acknowledgements:
 
-MATLAB Libaries: MATLAB
-patchNormalizeHMM: Niko Sunderhauf copyright 2013
-sort_nat: Douglas M. Schwarz copyright 2008
-Hybrid Net (not included in this release): Zetao Chen 2017
+MATLAB Libaries: MATLAB  
+patchNormalizeHMM: Niko Sunderhauf copyright 2013  
+sort_nat: Douglas M. Schwarz copyright 2008  
+Hybrid Net (not included in this release): Zetao Chen 2017  
 
