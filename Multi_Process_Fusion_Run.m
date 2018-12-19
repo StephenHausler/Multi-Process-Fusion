@@ -332,9 +332,9 @@ tic
                 title('Matched Scene');
 
                 plot_skip = plot_skip+1;
-                if plot_skip > 19
+                if plot_skip > 29
                     plot_skip = 0;
-                    subplot(2,2,2);
+                    subplot(2,2,2,'replace');
                     if NordlandGT~=1
                         imagesc(GT_file.GPSMatrix);
                         C = newcolormapcreate();
