@@ -103,9 +103,9 @@ tic
         for j = 1:totalImagesR 
             for k = 1:Template_count
                 if ((k-j) >= algSettings.minVelocity) && ((k-j) <= algSettings.maxVelocity) 
-                    T(j,k) = 1; %most likely the robot will stay in place or move forward.
+                    T(j,k) = 1; 
                 else
-                    T(j,k) = 0.001; %what is the probability that the robot will take a different route?
+                    T(j,k) = 0.001; 
                 end
             end
         end
