@@ -1,9 +1,16 @@
 # Multi-Process-Fusion
 Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing Methods
-Paper published in IEEE RAL. DOI: 10.1109/LRA.2019.2898427
+
+Paper published in IEEE RAL, with cited reference:
+S. Hausler, A. Jacobson and M. Milford, "Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing Methods," in IEEE Robotics and Automation Letters, vol. 4, no. 2, pp. 1924-1931, April 2019. doi: 10.1109/LRA.2019.2898427
+
+An open-source, print-print version is also available on arXiv:
+https://arxiv.org/pdf/1903.03305.pdf
+
 Copyright: Stephen Hausler
 
 ChangeLog:
+
 Currently at Revision 1.1.
 
 191218: Added additional option to set the image resizing value for the CNN input. Set to 227 by 227 for HybridNet and 224 by 224 for Vgg-16. Also fixed an out-of-memory bug when running the previous version of this code in R2018b.  
@@ -43,8 +50,8 @@ Detailed instructions for testing on the St Lucia dataset:
 
 Acknowledgements:
 
-MATLAB Libaries: MATLAB  
-patchNormalizeHMM: Niko Sunderhauf copyright 2013  
-sort_nat: Douglas M. Schwarz copyright 2008  
-Hybrid Net (not included in this release): Zetao Chen 2017  
+MATLAB Libaries: MATLAB;  
+patchNormalizeHMM: Niko Sunderhauf copyright 2013; 
+sort_nat: Douglas M. Schwarz copyright 2008;
+Hybrid Net (not included in this release): Zetao Chen 2017.
 
