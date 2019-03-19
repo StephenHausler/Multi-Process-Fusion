@@ -4,7 +4,7 @@ Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing M
 Paper published in IEEE RAL, with cited reference:
 S. Hausler, A. Jacobson and M. Milford, "Multi-Process Fusion: Visual Place Recognition Using Multiple Image Processing Methods," in IEEE Robotics and Automation Letters, vol. 4, no. 2, pp. 1924-1931, April 2019. doi: 10.1109/LRA.2019.2898427
 
-An open-source, print-print version is also available on arXiv:
+An open-source, pre-print version is also available on arXiv:
 https://arxiv.org/pdf/1903.03305.pdf
 
 Copyright: Stephen Hausler
